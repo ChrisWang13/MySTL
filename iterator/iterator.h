@@ -49,15 +49,56 @@ namespace MySTL {
       typedef _T&                        reference;
     };
     
-    // overload of advance_helper for different iterator.
+    
+    template<class _Iterator>
+    inline constexpr typename iterator_traits<_Iterator>::iterator_category
+    iterator_category(const _Iterator&) { 
+        // return required struct iterator tag
+        return typename iterator_traits<_Iterator>::iterator_category(); 
+    }
+
+/******************************************************************************/
+    // Iterator function: 
+    // 1. distance_helper() wraps up as distance()
+    // 2. advance_helper() wraps up as advance()
+/******************************************************************************/
+    // 1. 
+    template <class _InputIter>
+    inline constexpr 
+    typename iterator_traits<_InputIter>::difference_type 
+    distance_helper(_InputIter first, _InputIter last, input_iterator_tag) {
+        typename iterator_traits<_InputIter>::difference_type len = 0;
+        while(first != last) {
+            ++first;
+            ++len;
+        }
+        return len;
+    } 
+    
+    template <class _RandomAccessIter>
+    inline constexpr 
+    typename iterator_traits< _RandomAccessIter>::difference_type 
+    distance_helper(_RandomAccessIter first, _RandomAccessIter last, random_access_iterator_tag) {
+        return last - first;
+    } 
+
+    template <class _Iter>
+    inline constexpr 
+    typename iterator_traits<_Iter>::difference_type 
+    distance(_Iter first, _Iter second) {
+        return distance_helper(first, second, iterator_category(first));
+    } 
+    // 2. 
     template <class _InputIter, class _Distance>
-    inline void advance_helper(_InputIter& i, _Distance n, input_iterator_tag) {
+    inline constexpr void 
+    advance_helper(_InputIter& i, _Distance n, input_iterator_tag) {
         for(; n >= 1; --n) {
             ++i;
         }  
     }
     template <class _BidirectionalIter, class _Distance>
-    inline void advance_helper(_BidirectionalIter& i, _Distance n, bidirectional_iterator_tag) {
+    inline constexpr void 
+    advance_helper(_BidirectionalIter& i, _Distance n, bidirectional_iterator_tag) {
         if(n > 0) {
             for(; n >= 1; --n) ++i;
         }
@@ -66,13 +107,15 @@ namespace MySTL {
         }
     }
     template <class _RandomAccessIter, class _Distance>
-    inline void advance_helper(_RandomAccessIter& i, _Distance n, random_access_iterator_tag) {
+    inline constexpr void 
+    advance_helper(_RandomAccessIter& i, _Distance n, random_access_iterator_tag) {
         i += n; 
     }
     // function template auto deduction.
     // MySTL::advance(it, n)
     template <class _Iterator, class _Distance>
-    inline void advance(_Iterator& i, _Distance n) {
+    inline constexpr void 
+    advance(_Iterator& i, _Distance n) {
         advance_helper(i, n, iterator_category(i));
     }
 }
