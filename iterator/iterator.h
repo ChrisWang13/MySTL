@@ -59,10 +59,12 @@ namespace MySTL {
 
 /******************************************************************************/
     // Iterator function: 
+    // function template auto deduction.
     // 1. distance_helper() wraps up as distance()
     // 2. advance_helper() wraps up as advance()
+    // 3. next() calls advance(), but leave itertor value unchanged
+    // 3. prev() calls advance(), but leave itertor value unchanged
 /******************************************************************************/
-    // 1. 
     template <class _InputIter>
     inline constexpr 
     typename iterator_traits<_InputIter>::difference_type 
@@ -88,7 +90,7 @@ namespace MySTL {
     distance(_Iter first, _Iter second) {
         return distance_helper(first, second, iterator_category(first));
     } 
-    // 2. 
+
     template <class _InputIter, class _Distance>
     inline constexpr void 
     advance_helper(_InputIter& i, _Distance n, input_iterator_tag) {
@@ -96,6 +98,7 @@ namespace MySTL {
             ++i;
         }  
     }
+    
     template <class _BidirectionalIter, class _Distance>
     inline constexpr void 
     advance_helper(_BidirectionalIter& i, _Distance n, bidirectional_iterator_tag) {
@@ -106,16 +109,31 @@ namespace MySTL {
             for(; n <= -1; ++n) --i;
         }
     }
+
     template <class _RandomAccessIter, class _Distance>
     inline constexpr void 
     advance_helper(_RandomAccessIter& i, _Distance n, random_access_iterator_tag) {
         i += n; 
     }
-    // function template auto deduction.
-    // MySTL::advance(it, n)
+    
     template <class _Iterator, class _Distance>
     inline constexpr void 
     advance(_Iterator& i, _Distance n) {
         advance_helper(i, n, iterator_category(i));
     }
+
+    template <class _InputIter>
+    inline constexpr _InputIter
+    next(_InputIter i, typename iterator_traits<_InputIter>::difference_type len = 1) {
+        advance(i, len);
+        return i;
+    }
+
+    template <class _BidirectionalIterator>
+    inline constexpr _BidirectionalIterator
+    prev(_BidirectionalIterator i, typename iterator_traits<_BidirectionalIterator>::difference_type len = 1) {
+        advance(i, -len);
+        return i;
+    }
 }
+   
