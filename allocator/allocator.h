@@ -6,7 +6,6 @@ namespace MySTL {
     // allocator
     template <class _T>
     struct allocator {
-    public:
         typedef _T          value_type;
         typedef size_t      size_type;
         typedef ptrdiff_t   difference_type;
