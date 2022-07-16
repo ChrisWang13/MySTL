@@ -1,5 +1,5 @@
-#ifndef _ALLOCATOR_H
-#define _ALLOCATOR_H
+#ifndef MYSTL_ALLOCATOR_H
+#define MYSTL_ALLOCATOR_H
 
 #include <new>
 #include <cstddef>
@@ -25,7 +25,8 @@ namespace MySTL {
     };
     // allocate member function.
     template< class _T >
-    constexpr _T* allocator<_T>::allocate(size_type n) {
+    constexpr _T* allocator<_T>::
+    allocate(size_type n) {
         if (n == 0) {
             return nullptr;
         }
@@ -35,7 +36,8 @@ namespace MySTL {
     }
     // deallocate member function.
     template< class _T >
-    constexpr void allocator<_T>::deallocate(_T* p, size_type n) {
+    constexpr void allocator<_T>::
+    deallocate(_T* p, size_type) {
         if (p == nullptr)
             return;
         ::operator delete(p);
