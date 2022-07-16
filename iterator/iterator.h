@@ -1,4 +1,6 @@
-#pragma once 
+#ifndef MYSTL_ITERATOR_H
+#define MYSTL_ITERATOR_H
+
 #include <cstddef>
 // <cstddef> for ptrdiff_t, defined as 
 // typedef /*implementation-defined*/ ptrdiff_t, which stands for
@@ -138,5 +140,7 @@ namespace MySTL {
         advance(i, -len);
         return i;
     }
-}
+} // namespace MySTL
+#endif
+
    
